@@ -24,7 +24,10 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.DataStructures import arraylist as al
+from DISClib.ADT import map as mp
 assert cf
+
 
 
 """
@@ -52,20 +55,27 @@ def initCatalog():
     return controller.initCatalog()
 
 
+
 def loadData(catalog):
     """
     Carga los libros en el catalogo
     """
     controller.loadData(catalog)
+    
 
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        c= controller.initCatalog()
+        catalog= controller.initCatalog()
+        loadData(catalog)
+        #print (al.firstElement(catalog["videos"]))
+        print (mp.size(catalog['category']))
+        print (mp.get(catalog["category"],"3"))
     elif int(inputs[0]) == 2:
         pass
     else:
         sys.exit(0)
 sys.exit(0)
+

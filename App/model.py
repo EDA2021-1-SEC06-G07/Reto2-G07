@@ -30,6 +30,7 @@ from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
+from DISClib.DataStructures import arraylist as al
 assert cf
 
 """
@@ -42,42 +43,17 @@ def newCatalog():
     catalog = {'video': None,
                'category': None,
                }
-    catalog['videos'] = lt.newList('SINGLE_LINKED',cmpVideosbyCategory)
+    catalog['videos'] = lt.newList(datastructure= 'ARRAY_LIST',
+                                   cmpfunction = cmpVideosbyCategory)
 
-    catalog['category'] = mp.newMap(10000,
-                                   maptype='CHAINING',
-                                   loadfactor=4.0,
-                                   )
+    catalog['category'] = mp.newMap()
+    
     return catalog
 # Funciones para agregar informacion al catalogo
 
 def addVideo(catalog, video):
-    lt.addLast(catalog['video'], video)
+    al.addLast(catalog['videos'], video)
     mp.put(catalog['category'], video['category_id'], video)
-    category = video['category_id'].split(",")  # Se obtienen los autores
-    for videos in category:
-        addVideoByCategory(catalog, video.strip(), video)
-    
-def addVideoByCategory(catalog, categoryname, video):
-    categories = catalog['category']
-    existcategory = mp.contains(categories, categoryname)
-    if existcategory:
-        entry = mp.get(categories, categoryname)
-        category = me.getValue(entry)
-    else:
-        category = newCategory(categoryname)
-        mp.put(categories, categoryname, video)
-    lt.addLast(video['category_id'], video)
-    
-# Funciones para creacion de datos
-
-def newCategory(category_id):
-    category = {'name': "",
-              "videos": None}
-    category['category_id'] = category_id
-    category['videos'] = lt.newList('SINGLE_LINKED', cmpVideosbyCategory)
-    return category
-
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -96,4 +72,5 @@ def cmpVideosByLikes(video1,video2):
         return 1
     else:
         return -1
+
 # Funciones de ordenamiento

@@ -58,4 +58,3 @@ def loadVideos(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-    

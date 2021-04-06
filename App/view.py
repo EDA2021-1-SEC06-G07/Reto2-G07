@@ -26,8 +26,9 @@ import controller
 from DISClib.ADT import list as lt
 from DISClib.DataStructures import arraylist as al
 from DISClib.ADT import map as mp
+from DISClib.DataStructures import mapentry as me
 assert cf
-
+import model
 
 
 """
@@ -72,9 +73,11 @@ while True:
         loadData(catalog)
         #print (al.firstElement(catalog["videos"]))
         print (mp.size(catalog['category']))
-        print (mp.get(catalog["category"],"3"))
+        print (mp.get(catalog["category"],"24"))   
+        
     elif int(inputs[0]) == 2:
         pass
+        
     else:
         sys.exit(0)
 sys.exit(0)

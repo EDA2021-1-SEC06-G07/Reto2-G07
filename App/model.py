@@ -44,33 +44,58 @@ def newCatalog():
                'category': None,
                }
     catalog['videos'] = lt.newList(datastructure= 'ARRAY_LIST',
-                                   cmpfunction = cmpVideosbyCategory)
+                                   cmpfunction = cmpVideosByCategory)
 
-    catalog['category'] = mp.newMap()
-    
+    catalog['category'] = mp.newMap(numelements=20000,
+                                    loadfactor=4.0,
+                                    maptype= "CHAINING",
+                                    comparefunction= cmpByCategory     
+                                )
     return catalog
 # Funciones para agregar informacion al catalogo
 
 def addVideo(catalog, video):
     al.addLast(catalog['videos'], video)
     mp.put(catalog['category'], video['category_id'], video)
+  
 # Funciones de consulta
 
+def getVideosByCategory(catalog,category_id):
+    category_id = mp.get(catalog["category"], category_id)
+    if category_id:
+        return me.getValue(category_id)['videos']
+    
 # Funciones utilizadas para comparar elementos dentro de una lista
-def cmpVideosbyCategory(ctg1,ctg2):
-    if (ctg1 == ctg2):
+def cmpByCategory(id1,entry):
+    identry = me.getKey(entry)
+    if  int(id1) == int(identry):
         return 0
-    elif ctg1 > ctg2:
+    elif int(id1) > int(identry):
         return 1
     else:
         return -1
 
 def cmpVideosByLikes(video1,video2):
-    if (video1['likes']== vide2['likes']):
+    if (video1['likes']== video2['likes']):
         return 0
     elif vide1['likes'] > video2['likes']:
         return 1
     else:
         return -1
-
+    
+def cmpVideosByViews(video1,video2):
+    if (video1['likes']== video2['likes']):
+        return 0
+    elif vide1['likes'] > video2['likes']:
+        return 1
+    else:
+        return -1
+    
+def cmpVideosByCategory(video1,video2):
+    if (video1['category_id']== video2['category_id']):
+        return 0
+    elif video1['category_id'] > video2['category_id']:
+        return 1
+    else:
+        return -1
 # Funciones de ordenamiento

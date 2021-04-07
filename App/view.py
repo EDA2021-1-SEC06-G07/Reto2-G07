@@ -61,7 +61,7 @@ def loadData(catalog):
     """
     Carga los libros en el catalogo
     """
-    controller.loadData(catalog)
+    return controller.loadData(catalog)
     
 
 while True:
@@ -70,11 +70,9 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog= controller.initCatalog()
-        loadData(catalog)
-        #print (al.firstElement(catalog["videos"]))
-        print (mp.size(catalog['category']))
-        print (mp.get(catalog["category"],"24"))   
-        
+        carga = loadData(catalog)
+        print ("Tiempo[ms]:", f"{carga[0]:.3f}", "||", 
+               "Memoria[kB]:", f"{carga[1]:.3f}")
     elif int(inputs[0]) == 2:
         pass
         

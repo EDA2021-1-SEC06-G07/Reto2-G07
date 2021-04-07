@@ -46,18 +46,34 @@ def newCatalog():
     catalog['videos'] = lt.newList(datastructure= 'ARRAY_LIST',
                                    cmpfunction = cmpVideosByCategory)
 
-    catalog['category'] = mp.newMap(numelements=20000,
+    catalog['category'] = mp.newMap(numelements=2000,
                                     loadfactor=4.0,
-                                    maptype= "CHAINING",
-                                    comparefunction= cmpByCategory     
+                                    maptype= "CHAINING"    
                                 )
     return catalog
 # Funciones para agregar informacion al catalogo
 
 def addVideo(catalog, video):
     al.addLast(catalog['videos'], video)
-    mp.put(catalog['category'], video['category_id'], video)
-  
+    addCategory(catalog,video)
+
+def addCategory(catalog, video):
+    categories = catalog["category"]
+    category = video["category_id"]
+    exist = mp.contains(categories,category)
+    if exist:
+            entry = mp.get(categories, category)
+            category_id = me.getValue(entry)
+    else:
+            category_id = newCategory(category)
+            mp.put(categories, category, category_id)
+    lt.addLast(category_id['videos'], video)
+
+def newCategory(category):
+    dic = {'categoria': '','videos': None}
+    dic['categoria'] = category
+    dic['videos'] = lt.newList('SINGLE_LINKED', cmpVideosByViews)
+    return dic
 # Funciones de consulta
 
 def getVideosByCategory(catalog,category_id):

@@ -63,7 +63,6 @@ def loadData(catalog):
     """
     return controller.loadData(catalog)
     
-
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')

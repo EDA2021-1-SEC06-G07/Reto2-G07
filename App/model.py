@@ -46,8 +46,8 @@ def newCatalog():
     catalog['videos'] = lt.newList(datastructure= 'ARRAY_LIST',
                                    cmpfunction = cmpVideosByCategory)
 
-    catalog['category'] = mp.newMap(numelements=2000,
-                                    loadfactor=4.0,
+    catalog['category'] = mp.newMap(numelements=190000,
+                                    loadfactor=6.0,
                                     maptype= "CHAINING"    
                                 )
     return catalog

@@ -53,7 +53,9 @@ def loadData(catalog):
     
     start_time= getTime()
     start_memory = getMemory()
+    loadIdName_Category(catalog)
     loadVideos(catalog)
+    
     
     stop_time = getTime()
     stop_memory = getMemory()
@@ -83,7 +85,20 @@ def loadVideos(catalog):
     videosfile = cf.data_dir + 'Samples/videos-large.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
-        model.addVideo(catalog, video)
+        model.addVideoCategory(catalog, video)
+
+def loadIdName_Category(catalog):
+    file = cf.data_dir + 'Samples/category-id.csv'
+    input_file = csv.DictReader(open(file, encoding='utf-8',errors='ignore'),delimiter='\t')
+    for category in input_file:
+        name = category['name']
+        name_mod = name.strip()
+        name_cat= name_mod.lower()
+        sub_catalog = {
+            'id': category['id'],
+            'name': name_cat
+        }
+        model.addIdName_Category(catalog, sub_catalog)
 
 # Funciones de ordenamiento
 

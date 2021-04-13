@@ -24,7 +24,8 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
-from DISClib.DataStructures import arraylist as al
+from DISClib.DataStructures import arraylist as alt
+from DISClib.DataStructures import arraylist as slt
 from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 assert cf
@@ -70,8 +71,13 @@ while True:
         print("Cargando información de los archivos ....")
         catalog= controller.initCatalog()
         carga = loadData(catalog)
-        print ("Tiempo[ms]:", f"{carga[0]:.3f}", "||", 
+        print("Tiempo[ms]:", f"{carga[0]:.3f}", "||", 
                "Memoria[kB]:", f"{carga[1]:.3f}")
+        print('videos cargados: '+ str(alt.size(catalog['videos'])))
+        print('Categorias cargadas: '+ str(slt.size(catalog['idname_category'])))
+        print(catalog['idname_category'])
+        #print(mp.get(catalog['category'],'shows'))
+        
     elif int(inputs[0]) == 2:
         pass
         

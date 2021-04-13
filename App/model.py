@@ -67,6 +67,7 @@ def addIdName_Category(catalog,category):
 def addVideoCategory(catalog, video):
     alt.addLast(catalog['videos'], video)
     addCategory(catalog,video)
+    addCountry(catalog,video)
 
 def addCategory(catalog, video):
     categories = catalog["category"]
@@ -81,6 +82,22 @@ def addCategory(catalog, video):
             category_id = newCategory(idnumber,idnamecmp)
             mp.put(categories, category_id['name_category'], category_id)
     lt.addLast(category_id['videos'], video)
+    
+def addCountry(catalog, video):
+    countries = catalog["country"]
+    video_country = video["country"]
+    exist = mp.contains(countries,video_country)
+    if exist:
+        entry = mp.get(countries,video_country)
+        country = me.getValue(entry)
+    else: 
+        country = newCountry()
+        mp.put(countries,video_country,country)
+    lt.addLast(country,video)
+    
+    
+def newCountry():
+    return lt.newList('SINGLE_LINKED',cmpVideosByViews)
     
     
 def newCategory(idnumber,idnamecmp):
@@ -135,3 +152,16 @@ def cmpVideosByViews(video1,video2):
         return -1
 
 # Funciones de ordenamiento
+def filtar_paisTendencia(catalog, country):
+    countries = catalog['country']
+    
+    
+    videos = catalog['videos']
+    sub_list =  lt.newList(datastructure= 'ARRAY_LIST')
+    for video in lt.iterator(videos):
+        if video['country'] == country:
+            lt.addLast(sub_list,video)
+    srt_list = sortVideos(sub_list,cmpVideosbyId)
+    lst = extraer_ids(srt_list)
+    id,m = id_mas_repetido(lst)
+    return (video_por_id(srt_list,id,m))

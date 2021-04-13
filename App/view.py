@@ -75,8 +75,10 @@ while True:
                "Memoria[kB]:", f"{carga[1]:.3f}")
         print('videos cargados: '+ str(alt.size(catalog['videos'])))
         print('Categorias cargadas: '+ str(slt.size(catalog['idname_category'])))
+        print('Paises Cargados: '+ str(slt.size(catalog['country'])))
         print(catalog['idname_category'])
         #print(mp.get(catalog['category'],'shows'))
+        
         
     elif int(inputs[0]) == 2:
         pass

@@ -32,6 +32,7 @@ from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.DataStructures import arraylist as alt
 from DISClib.DataStructures import singlelinkedlist as slt
+from DISClib.Algorithms.Sorting import mergesort as mes 
 assert cf
 
 """
@@ -106,7 +107,7 @@ def newCategory(idnumber,idnamecmp):
             'videos': None}
     dic['id_category'] = idnumber
     dic['name_category'] = idnamecmp
-    dic['videos'] = lt.newList('SINGLE_LINKED', cmpVideosByViews)
+    dic['videos'] = lt.newList('ARRAY_LIST', cmpVideosByViews)
     return dic
 
 
@@ -143,19 +144,68 @@ def cmpVideosByCategory(video1,video2):
     else:
         return -1
 
-def cmpVideosByViews(video1,video2):
-    if video1['views'] == video2['views']:
-        return 0
-    elif video1['views'] > video2['views']:
-        return 1
-    else:
-        return -1
+def cmpVideosByViews(video1, video2):
+    if int(video1['views']) > int(video2['views']):
+        return True
+    elif int(video1['views']) < int(video2['views']):
+        return False
+    else: 
+        if int(video1['likes']) > int(video2['likes']):
+            return True
+        else:
+            return False
+
+def cmpVideosbyLikes(video1,video2):
+    if int(video1['likes']) > int(video2['likes']):
+        return True
+    elif int(video1['likes']) < int(video2['likes']):
+        return False
+    else: 
+        if int(video1['views']) > int(video2['views']):
+            return True
+        else:
+            return False
+
+def cmpVideosByFreq(video1,video2):
+    if int(video1['freq']) < int(video2['freq']):
+        return True
+    elif int(video1['freq']) > int(video2['freq']):
+        return False
+    else: 
+        if int(video1['views']) > int(video2['views']):
+            return True
+        else:
+            return False
+
+def cmpVideosbyId(video1,video2):
+    if int(video1['video_id']) > int(video2['video_id']):
+        return True
+    elif int(video1['video_id']) < int(video2['video_id']):
+        return False
+    else: 
+        return True
 
 # Funciones de ordenamiento
+def sortVideos(lst,cmpfunction):
+    sub_list = lst
+    sorted_list= mes.sort(sub_list,cmpfunction)
+    return  sorted_list
+#Funciones de requerimiento
+'Requerimiento #1'
+def filtrar_PaisCategoria(mapCategory,category,country,size):
+    categoria = mp.get(mapCategory,category)
+    valueCat = me.getValue(categoria)
+    lst_videos = valueCat['videos']
+    new_list = lt.newList(datastructure='ARRAY_LIST')
+    for video in lt.iterator(lst_videos):
+        if video['country']==country:
+                alt.addLast(new_list,video)  
+    sorted_list= sortVideos(new_list,cmpVideosByViews)  
+    lst_n = lt.subList(sorted_list,1,size) 
+    return lst_n
+"""
 def filtar_paisTendencia(catalog, country):
     countries = catalog['country']
-    
-    
     videos = catalog['videos']
     sub_list =  lt.newList(datastructure= 'ARRAY_LIST')
     for video in lt.iterator(videos):
@@ -164,4 +214,61 @@ def filtar_paisTendencia(catalog, country):
     srt_list = sortVideos(sub_list,cmpVideosbyId)
     lst = extraer_ids(srt_list)
     id,m = id_mas_repetido(lst)
-    return (video_por_id(srt_list,id,m))
+    return (video_por_id(srt_list,id,m))"""
+
+'Requerimiento #3'
+def video_mas_dias_tendencia(mapCategory,category):
+    categoria = mp.get(mapCategory,category)
+    valueCat = me.getValue(categoria)
+    lst_videos = valueCat['videos']
+    new_list = lt.newList(datastructure='ARRAY_LIST')
+    for video in lt.iterator(lst_videos):
+        if (video['video_id']!= '#NAME?'):
+            lt.addLast(new_list,video)
+    videosByFreq = extraer_ids(new_list)
+    videosSorted = sortVideos(videosByFreq,cmpVideosByFreq)
+    return alt.firstElement(videosSorted)
+
+def extraer_ids(lst):
+    new_list = lt.newList(datastructure='ARRAY_LIST')
+    for video in lt.iterator(lst):
+        if video['video_id'] not in new_list:
+            video['freq'] = 1
+            alt.addLast(new_list,video['video_id'])
+        else:
+            video['freq'] += 1    
+            
+    return lst
+
+"""
+def video_por_id(lst,id_video,freq_id):
+    for video in lt.iterator(lst):
+        if video['video_id'] == id_video:
+            info_video ={
+                'title': video['title'],
+                'channel_title': video['channel_title'],
+                'category_id': video['category_id'],
+                'dias': freq_id
+            }
+            return info_video
+
+def id_mas_repetido(lst):
+    id_mayor = None
+    id_cmp = 0
+    for video_id in lt.iterator(lst):
+        id_cant = lst['elements'].count(video_id)
+        if id_cant > id_cmp:
+            id_cmp = id_cant
+            id_mayor = video_id
+    return (id_mayor,id_cmp)
+"""
+'Requerimiento #4'
+def videos_mas_likes(mapCountry,country,size,tag):
+    pais = mp.get(mapCountry,country)
+    videos = me.getValue(pais)
+    new_list = lt.newList(datastructure='ARRAY_LIST')
+    for video in lt.iterator(videos):
+        if tag in video['tags']:
+            lt.addLast(new_list,video)
+    srt_lst = sortVideos(new_list,cmpVideosbyLikes)
+    return lt.subList(srt_lst,1,size)

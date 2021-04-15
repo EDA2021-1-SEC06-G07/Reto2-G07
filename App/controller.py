@@ -85,6 +85,7 @@ def loadVideos(catalog):
     videosfile = cf.data_dir + 'Samples/videos-large.csv'
     input_file = csv.DictReader(open(videosfile, encoding='utf-8'))
     for video in input_file:
+        
         model.addVideoCategory(catalog, video)
 
 def loadIdName_Category(catalog):
@@ -103,3 +104,22 @@ def loadIdName_Category(catalog):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def load_Req_1(mapCategory,category,country,size):
+    return  model.filtrar_PaisCategoria(mapCategory,category,country,size)
+def load_Req_3(mapCategory,category):
+    tracemalloc.start()
+    delta_time = -1.0
+    delta_memory = -1.0
+    
+    start_time= getTime()
+    start_memory = getMemory()
+    a= model.video_mas_dias_tendencia(mapCategory,category)
+    print(a)
+    stop_time = getTime()
+    stop_memory = getMemory()
+    tracemalloc.stop()
+    delta_time = stop_time - start_time
+    delta_memory = deltaMemory(start_memory, stop_memory)
+    return delta_time, delta_memory 
+def load_Req_4(mapCountry,country,size,tag):
+    return model.videos_mas_likes(mapCountry,country,size,tag)

@@ -42,7 +42,9 @@ operación solicitada
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- Encontrar videos con más likes por categoría")
+    print("2- Encontrar los n videos con más vistas de un categoría y país específico")
+    print('4- Encontrar el video con más días en tendencia de una categoria específica')
+    print('5- Encontrar los n cideos con más like de un país y un tag específico')
 
 catalog = None
 
@@ -63,6 +65,8 @@ def loadData(catalog):
     Carga los libros en el catalogo
     """
     return controller.loadData(catalog)
+
+catalog = None
     
 while True:
     printMenu()
@@ -75,14 +79,28 @@ while True:
                "Memoria[kB]:", f"{carga[1]:.3f}")
         print('videos cargados: '+ str(alt.size(catalog['videos'])))
         print('Categorias cargadas: '+ str(slt.size(catalog['idname_category'])))
-        print('Paises Cargados: '+ str(slt.size(catalog['country'])))
-        print(catalog['idname_category'])
-        #print(mp.get(catalog['category'],'shows'))
-        
-        
+        print('Paises Cargados: '+ str(mp.size(catalog['country'])))
+    
     elif int(inputs[0]) == 2:
+        category = str(input('Ingrese la categoria: '))
+        country = str(input('Ingrese el país: '))
+        size = int(input('Ingrese el cantidad de videos: '))
+        print('Consultando la información solicitada...')
+        print(controller.load_Req_1(catalog['category'],category,country,size))
+
+    elif int(inputs[0]) == 3:
         pass
-        
+    elif int(inputs[0]) == 4:    
+        category = str(input('Ingrese la categoria: '))
+        print('Consultando la información solicitada...')
+        print(controller.load_Req_3(catalog['category'],category))
+
+    elif int(inputs[0]) == 5:
+        country = str(input('Ingrese el país: '))
+        tag = str(input('Ingrese el tag: '))
+        size = int(input('Ingrese el cantidad de videos: '))
+        print('Consultando la información solicitada...')
+        print(controller.load_Req_4(catalog['country'],country,size,tag))
     else:
         sys.exit(0)
 sys.exit(0)

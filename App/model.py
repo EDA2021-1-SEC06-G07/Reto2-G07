@@ -167,12 +167,12 @@ def cmpVideosbyLikes(video1,video2):
             return False
 
 def cmpVideosByFreq(video1,video2):
-    if int(video1['freq']) < int(video2['freq']):
+    if int(video1['freq']) > int(video2['freq']):
         return True
-    elif int(video1['freq']) > int(video2['freq']):
+    elif int(video1['freq']) < int(video2['freq']):
         return False
     else: 
-        if int(video1['views']) > int(video2['views']):
+        if str(video1['id']) > str(video2['id']):
             return True
         else:
             return False
@@ -203,18 +203,19 @@ def filtrar_PaisCategoria(mapCategory,category,country,size):
     sorted_list= sortVideos(new_list,cmpVideosByViews)  
     lst_n = lt.subList(sorted_list,1,size) 
     return lst_n
-"""
-def filtar_paisTendencia(catalog, country):
-    countries = catalog['country']
-    videos = catalog['videos']
-    sub_list =  lt.newList(datastructure= 'ARRAY_LIST')
-    for video in lt.iterator(videos):
+
+"Requerimiento #2"
+def filtar_paisTendencia(mapCountry, country):
+    pais= mp.get(mapCountry,country)
+    lst_videos = me.getValue(pais)
+    new_list =  lt.newList(datastructure= 'ARRAY_LIST')
+    for video in lt.iterator(lst_videos):
         if video['country'] == country:
-            lt.addLast(sub_list,video)
-    srt_list = sortVideos(sub_list,cmpVideosbyId)
-    lst = extraer_ids(srt_list)
-    id,m = id_mas_repetido(lst)
-    return (video_por_id(srt_list,id,m))"""
+            lt.addLast(new_list,video)
+    videosByFreq = añadir_frecuencia(new_list)
+    videosSorted = sortVideos(videosByFreq,cmpVideosByFreq)
+    video_rta = alt.firstElement(videosSorted)
+    return filtrar_req2(video_rta)
 
 'Requerimiento #3'
 def video_mas_dias_tendencia(mapCategory,category):
@@ -225,43 +226,28 @@ def video_mas_dias_tendencia(mapCategory,category):
     for video in lt.iterator(lst_videos):
         if (video['video_id']!= '#NAME?'):
             lt.addLast(new_list,video)
-    videosByFreq = extraer_ids(new_list)
+    videosByFreq = añadir_frecuencia(new_list)
     videosSorted = sortVideos(videosByFreq,cmpVideosByFreq)
-    return alt.firstElement(videosSorted)
+    video_rta = alt.firstElement(videosSorted)
+    return filtrar_req3(video_rta)
 
-def extraer_ids(lst):
+def añadir_frecuencia(lst):
     new_list = lt.newList(datastructure='ARRAY_LIST')
-    for video in lt.iterator(lst):
-        if video['video_id'] not in new_list:
-            video['freq'] = 1
-            alt.addLast(new_list,video['video_id'])
-        else:
-            video['freq'] += 1    
-            
-    return lst
+    dic_list = lt.newList(datastructure='ARRAY_LIST')
 
-"""
-def video_por_id(lst,id_video,freq_id):
     for video in lt.iterator(lst):
-        if video['video_id'] == id_video:
-            info_video ={
-                'title': video['title'],
-                'channel_title': video['channel_title'],
-                'category_id': video['category_id'],
-                'dias': freq_id
-            }
-            return info_video
+        if alt.isPresent(new_list,video['video_id']):
+            for dic in lt.iterator(dic_list):
+                if dic['id'] == video['video_id']:
+                    dic['freq'] += 1  
+        else: 
+            dic={'id': video['video_id'],
+                'freq': 1,
+                'video': video}
+            alt.addLast(dic_list,dic)
+            alt.addLast(new_list,video['video_id'])  
+    return dic_list
 
-def id_mas_repetido(lst):
-    id_mayor = None
-    id_cmp = 0
-    for video_id in lt.iterator(lst):
-        id_cant = lst['elements'].count(video_id)
-        if id_cant > id_cmp:
-            id_cmp = id_cant
-            id_mayor = video_id
-    return (id_mayor,id_cmp)
-"""
 'Requerimiento #4'
 def videos_mas_likes(mapCountry,country,size,tag):
     pais = mp.get(mapCountry,country)
@@ -272,3 +258,25 @@ def videos_mas_likes(mapCountry,country,size,tag):
             lt.addLast(new_list,video)
     srt_lst = sortVideos(new_list,cmpVideosbyLikes)
     return lt.subList(srt_lst,1,size)
+
+#Función filtrar datos
+"Req_2"
+def filtrar_req2(elmt):
+    video = elmt['video']
+    info_video ={
+                'video': video['title'],
+                'canal': video['channel_title'],
+                'pais': video['country'],
+                'diasTendencia': elmt['freq']
+            }
+    return info_video
+"Req_3"
+def filtrar_req3(elmt):
+    video = elmt['video']
+    info_video ={
+                'video': video['title'],
+                'canal': video['channel_title'],
+                'categoria': video['category_id'],
+                'diasTendencia': elmt['freq']
+            }
+    return info_video

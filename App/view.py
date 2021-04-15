@@ -86,21 +86,48 @@ while True:
         country = str(input('Ingrese el país: '))
         size = int(input('Ingrese el cantidad de videos: '))
         print('Consultando la información solicitada...')
-        print(controller.load_Req_1(catalog['category'],category,country,size))
+        lst= controller.load_Req_1(catalog['category'],category,country,size)
+        for video in lt.iterator(lst):
+            print('\n')
+            print('video: '+str(video['title']))
+            print('trending_date: '+str(video['trending_date']))
+            print('canal: '+str(video['channel_title']))
+            print('publish_time: '+str(video['publish_time']))
+            print('Reproducciones: '+str(video['views']))
+            print('likes: '+str(video['likes']))
+            print('dislikes: '+str(video['dislikes']))
+            print('\n')
+            
 
     elif int(inputs[0]) == 3:
-        pass
+        country = str(input('Ingrese el país: '))
+        print('Consultando la información solicitada...')
+        print('\n')
+        print(controller.load_Req_2(catalog['country'],country))
+        print('\n')
     elif int(inputs[0]) == 4:    
         category = str(input('Ingrese la categoria: '))
         print('Consultando la información solicitada...')
+        print('\n')
         print(controller.load_Req_3(catalog['category'],category))
+        print('\n')
 
     elif int(inputs[0]) == 5:
         country = str(input('Ingrese el país: '))
         tag = str(input('Ingrese el tag: '))
         size = int(input('Ingrese el cantidad de videos: '))
         print('Consultando la información solicitada...')
-        print(controller.load_Req_4(catalog['country'],country,size,tag))
+        lst = controller.load_Req_4(catalog['country'],country,size,tag)
+        for video in lt.iterator(lst):
+            print('\n')
+            print('video: '+str(video['title']))
+            print('canal: '+str(video['channel_title']))
+            print('publish_time: '+str(video['publish_time']))
+            print('Reproducciones: '+str(video['views']))
+            print('likes: '+str(video['likes']))
+            print('dislikes: '+str(video['dislikes']))
+            print('tags: '+str(video['tags']))
+            print('\n')
     else:
         sys.exit(0)
 sys.exit(0)
